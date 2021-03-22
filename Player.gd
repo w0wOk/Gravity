@@ -1,10 +1,17 @@
 extends KinematicBody2D
 
+onready var timer = $Timer
+
 var gravityState = 1
 var motion = Vector2()
 var up = Vector2()
+var spawnPoint
+
 const SPEED = 1000
 const JUMP = -1000
+
+func _ready():
+	spawnPoint = position
 
 func _physics_process(delta):
 	if gravityState == 1:
@@ -64,6 +71,8 @@ func _physics_process(delta):
 				motion.x = -JUMP
 				
 	motion = move_and_slide(motion, up)
+	
+	
 
 func _on_Timer_timeout():
 	if gravityState == 1:
@@ -74,3 +83,9 @@ func _on_Timer_timeout():
 		gravityState = 4
 	elif gravityState == 4:
 		gravityState = 1
+
+
+func _on_Area2D_body_entered(body):
+	position = spawnPoint
+	gravityState = 1
+	timer.set_wait_time(3)
